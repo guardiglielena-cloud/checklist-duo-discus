@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checklist Duo Discus</title>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-sky-100">
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="env,react">
+    const { useState } = React;
+
+    const Check = (props) => (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+    );
+    const Circle = (props) => (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <circle cx="12" cy="12" r="10" />
+      </svg>
+    );
+
+    const SectionCard = ({ title, children }) => (
+      <div className="bg-white rounded-xl shadow-lg p-6">
+        <h2 className="text-xl font-bold text-blue-700 mb-4">{title}</h2>
+        {children}
+      </div>
+    );
+
+    const Checklist = ({ blocks, state, setState }) => {
+      const toggle = (key) => setState(prev => ({ ...prev, [key]: !prev[key] }));
+      return (
+        <div className="space-y-6">
+          {blocks.map((block, bi) => (
+            <div key={bi}>
+              <h3 className="text-base font-bold text-sky-700 border-b border-sky-200 pb-2 mb-3">{block.section}</h3>
+              <div className="space-y-2">
+                {block.items.map((it, ii) => {
+                  const k = `${bi}-${ii}`;
+                  const checked = !!state[k];
+                  return (
+                    <button
+                      key={k}
+                      onClick={() => toggle(k)}
+                      className={"w-full text-left flex items-start gap-3 rounded-lg px-3 py-2 transition " +
+                                (checked ? "bg-green-50 hover:bg-green-100" : "bg-gray-50 hover:bg-blue-50")}
+                    >
+                      {checked ? <Check className="text-green-600 mt-0.5" /> : <Circle className="text-gray-400 mt-0.5" />}
+                      <span className={"text-sm " + (checked ? "line-through text-gray-500" : "text-gray-800")}>{it}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    };
+
+    const StaticList = ({ blocks }) => (
+      <div className="space-y-6">
+        {blocks.map((b, i) => (
+          <div key={i}>
+            <h3 className="text-base font-bold text-sky-700 border-b border-sky-200 pb-2 mb-3">{b.section}</h3>
+            <ul className="list-disc list-inside space-y-1 text-sm text-gray-800">
+              {b.items.map((it, j) => <li key={j}>{it}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    );
+
+    function App() {
+      const [view, setView] = useState('home');
+      const [prevolo, setPrevolo] = useState({});
+      const [volo, setVolo] = useState({});
+      const [emergenze, setEmergenze] = useState({});
+
+      const blocchiPrevolo = [
+        { section: 'CONTROLLI IN CABINA', items: [
+          'PERNO ALI…………………………. controllato',
+          'OLIO FRENO livello',
+          'BATTERIE installate e collegate',
+          'OGGETTI LIBERI sistemati',
+          'STRUMENTI tutti controllati',
+          'FRENO provato',
+          'POMELLI SGANCIO integri',
+          'RADIO 120.230 provata',
+          'CINGHIE controllate',
+          'SCHIENALI controllati',
+          'ZAVORRA assente/presente',
+        ]},
+        { section: 'CONTROLLI ESTERNI', items: [
+          'TETTUCCI E FILI DI LANA integro e presenti',
+          'MUSONE integro',
+          'GANCIO controllare',
+          'RUOTE ant 3 atm centrale 4 atm',
+          'PRESA TOTALE soffiare delicatamente',
+          'FIANCATA ANT. SX integra',
+          'SEMIALA SINISTRA superficie per danni',
+          'DIRUTTORE funzionalità e giochi',
+          'CONNESSIONE ESTENSIONE ALARE fissata',
+          'CONTROLLO RUOTINO ALA integro',
+          'ALETTONE integrità, libertà, giochi',
+          'SCARICO BALLAST …funzionante',
+          'FIANCATA POST. SX E STATICHE integra, libere',
+          'COMPENSATORE VARIO verso l’alto',
+          'DERIVA integrità',
+          'STABILIZZATORE fermo di montaggio',
+          'EQUILIBRATORE controllato',
+          'TIMONE integrità, fine corsa',
+          'RUOTINO CODA 3 atm controllato',
+          'FIANCATA POST. DX E STATICHE integra, libere',
+          'SCARICO BALLAST funzionante',
+          'SEMIALA DX superfici per danni',
+          'DIRUTTORE funzionalità e giochi',
+          'CONNESSIONE ESTENSIONE ALARE fissata',
+          'CONTROLLO RUOTINO ALA integro',
+          'ALETTONE integrità, libertà, giochi',
+          'FIANCATA ANT. DX integra',
+          'GANCIO BARICENTRICO integro, pulito',
+        ]},
+        { section: 'CONTROLLI PREDECOLLO', items: [
+          'EFFETTUARE BRIEFING DELLA MISSIONE',
+          'CONTROLLI PRIMA DI SALIRE A BORDO',
+          'KULLER E WING DOLLY rimossi',
+          'ZAVORRA SE NECESSARIA inserita',
+          'SCHIENALE E CUSCINI regolato',
+          'PARACADUTE indossato',
+          'CINTURE estese',
+          'CORDA verifica nodi – giusta distanza',
+          'SALITI A BORDO',
+          'EMERGENZA TETTUCCIO in posizione',
+          'PEDALIERA regolata',
+          'OGGETTI LIBERI OK',
+          'CINTURE allacciate',
+          'STRUMENTI controllati',
+          'BERRETTO, OCCHIALI indossati',
+          'TETTUCCIO PAX chiuso e bloccato',
+          'TETTUCCIO PIL chiuso e bloccato',
+          'RADIO 120.230 volume regolato',
+          'NOTIFICA: Castellazzo Radio buongiorno',
+          'NOTIFICA: Aliante D-1557, prova radio e stop orario',
+          'NOTIFICA: Castellazzo, D-57 vi sento 5, stop orario',
+          'NOTIFICA: Volo locale, due a bordo, pilota effemeridi',
+        ]},
+        { section: 'CONTROLLI PRIMA DEL DECOLLO / ESTERNI', items: [
+          'COMANDI DI VOLO provati fondo corsa',
+          'DIRUTTORI provati e bloccati',
+          'TRIM regolato',
+          'PIANIFICAZIONE EMERGENZA decisa',
+          'VENTO entro limiti',
+          'AREA libera da traffico',
+          'CAVO far agganciare',
+          'DIRUTTORI APERTI frenare',
+          'FLAP TRAINO abbassati',
+          'CAVO TESO bloccare diruttori',
+          'POLLICE ALZATO per livellare le ali',
+          'SEDUTA PILOTA corretta',
+          'MANO SX SULLA GAMBA pronta a sganciare',
+        ]},
+      ];
+
+      const blocchiVolo = [
+        { section: 'SGANCIO DA TRAINO AEREO', items: [
+          'GUARDARE A DX area libera',
+          'POSIZIONE CORRETTA DIETRO AL TRAINO',
+          'SGANCIARE la fune si allontana',
+          'VIRARE A DX ..............................IAS 80 km/h',
+        ]},
+        { section: 'PREACROBATICI', items: [
+          'CINTURE tese',
+          'DIRUTTORI bloccati',
+          'OGGETTI LIBERI fissati',
+          'TETTUCCIO bloccato',
+          'CARRELLO retratto',
+          'AREA libera',
+          'QUOTA DI SICUREZZA mai meno di 500 m',
+        ]},
+        { section: 'IN PRENOTAZIONE / CIRCUITO', items: [
+          'VELOCITÀ > triangolo giallo',
+          'CARRELLO estratto e bloccato',
+          'CHIAMATA RADIO “Prenotazione”',
+          'VENTO E METEO valutare',
+          'SPAZIO AEREO controllato',
+        ]},
+        { section: 'SOTTOVENTO – BASE – FINALE – POST VOLO', items: [
+          'SOTTOVENTO: VELOCITÀ triangolo giallo',
+          'SOTTOVENTO: DIRUTTORI provati',
+          'SOTTOVENTO: CHIAMATA RADIO “Sottovento”',
+          'BASE: LUNGO FINALE libero',
+          'FINALE: VELOCITÀ triangolo giallo',
+          'FINALE: DIRUTTORI a metà poi regolare',
+          'POST VOLO: LIBERARE VELOCEMENTE LA PISTA',
+          'POST VOLO: CHIAMATA RADIO “D-1557 ha liberato”',
+          'POST VOLO: EFFETTUARE DEBRIEFING DELLA MISSIONE',
+        ]}
+      ];
+
+      const blocchiEmergenze = [
+        { section: 'ROTTURA CAVO O PIANTATA MOTORE', items: [
+          '< 50 m: ACCOSTARE VERSO ZONA LIBERA DA OSTACOLI E CONTROVENTO',
+          '> 50 m: VIRARE VERSO IL VENTO E DIRIGERSI IN FINALE SULLA PISTA',
+          'SGANCIARE IL CAVO IN LUOGO SICURO',
+        ]},
+        { section: 'RIMESSA DALLA VITE', items: [
+          'PIEDE CONTRARIO ALLA ROTAZIONE',
+          'BARRA AL CENTRO',
+          'poi quando cessa la rotazione:',
+          'PEDALIERA AL CENTRO',
+          'CABRARE DECISAMENTE SE IN ARCO VERDE',
+        ]},
+        { section: 'LANCIARSI COL PARACADUTE', items: [
+          'TIRARE MANIGLIE ROSSE',
+          'SPINGERE VIA IL TETTUCCIO',
+          'SBLOCCARE LE CINTURE',
+          'SOLLEVARSI E LANCIARSI FUORI',
+          'INDIVIDUARE LA MANIGLIA DEL PARACADUTE',
+          'TIRARE A DUE MANI VERSO I PIEDI O IN AVANTI',
+          'PRIMA IL PAX POI IL PILOTA',
+        ]},
+        { section: 'PROCEDURE NON NORMALI', items: [
+          'ALI BAGNATE/GHIACCIATE: +10 km/h',
+          'CADUTA D’ALA (VITE INCIPIENTE): BARRA CENTRO + PIEDE CONTRARIO',
+          'IMBARDATA A TERRA > 15° ALL’INIZIO DECOLLO: SGANCIARE SUBITO',
+          'AVARIA RADIO: CIRCUITARE VERTICALE ROLLANDO, POI PRENOTAZIONE',
+        ]},
+      ];
+
+      const blocchiCaratteristiche = [
+        { section: 'DATI TECNICI', items: [
+          'APERTURA ALARE: 20 m',
+          'LUNGHEZZA: 8,62 m',
+          'ALTEZZA: 1,00 m',
+        ]},
+        { section: 'PERFORMANCE (mono / biposto)', items: [
+          'EFFICIENZA: 45 / 45 (IAS 100 / 103 km/h)',
+          'MINIMA CADUTA: 0.58 m/s (IAS 100 / 103 km/h)',
+        ]},
+        { section: 'PESI', items: [
+          'PESO A VUOTO: 420 kg',
+          'MAX PESO TOTALE: 700 kg',
+          'MAX PESO SENZA BALLAST: 660 kg',
+          'PESO SEDILE (min/max): ANT 70–110 kg / POST 0–110 kg',
+        ]},
+        { section: 'VELOCITÀ', items: [
+          'VNE (fino 2000 m): 250 km/h',
+          'VA manovra: 180 km/h',
+          'VB raffica: 180 km/h',
+          'VT traino: 180 km/h',
+          'VW verricello: 150 km/h',
+          'STALLO 1g senza/con diruttori (solo pilota): 58/62 km/h',
+          'STALLO 1g senza/con diruttori (due piloti): 60/66 km/h',
+          'MAX COMP VENTO TRAVERSO: 20 km/h',
+          'INVILUPPO VOLO alla VNE: +4.0 / -1.5',
+          'INVILUPPO VOLO alla VA: +5.3 / -2.65',
+          'INVILUPPO VOLO con DIRUTTORI: +3.5 / 0.0',
+        ]},
+      ];
+
+      const blocchiFrequenze = [
+        { section: 'FREQUENZE RADIO', items: [
+          'CASTELLAZZO RADIO 120.230',
+          'REGGIO INFO 127.150',
+          'MODENA RADIO 119.550',
+          'SASSUOLO RADIO 124.000',
+          'CARPI RADIO 123.000',
+          'PAVULLO RADIO 122.600',
+          'PARMA AVV 127.575',
+          'BOLOGNA OVEST AVV 118.150 / 133.775',
+          'VERONA AVV 118.550',
+          'MILANO INFO 126.750',
+          'PADOVA INFO 126.425',
+          'FIRENZE AVV 125.825',
+          'BOLOGNA EST AVV 118.150',
+          'FERRARA 122.550',
+          'OZZANO 128.450',
+          'MUGELLO 130.000',
+          'SAN SEPOLCRO 130.000',
+          'FORNOVO 130.000',
+          'CREMONA 119.655',
+          'MOLINELLA 126.900',
+          'AREZZO 126.900',
+          'RIETI 123.050',
+          'FOLIGNO 119.550',
+          'L’AQUILA 122.500',
+          'VOLMET MILANO 126.600',
+          'VOLMET PISA 128.400',
+          'ALIANTI 123.375',
+          'MILANO RADAR 135.900',
+          'LEGNAGO 119.725',
+        ]},
+      ];
+
+      const Home = () => (
+        <div className="max-w-5xl mx-auto px-4 py-10">
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-extrabold text-gray-800">Checklist Duo Discus</h1>
+            <p className="text-gray-600 mt-2">Tocca i pulsanti per spuntare gli elementi. Dati e frequenze sempre visibili sotto.</p>
+          </div>
+
+          {/* Pulsanti solo per le checklist interattive */}
+          <div className="grid md:grid-cols-3 gap-6 mb-10">
+            <button onClick={() => setView('prevolo')} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-0.5 transition">
+              <h3 className="text-lg font-bold text-gray-800">Controlli Prevolo</h3>
+              <p className="text-sm text-gray-500 mt-1">Cabina, esterni, predecollo</p>
+            </button>
+            <button onClick={() => setView('volo')} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-0.5 transition">
+              <h3 className="text-lg font-bold text-gray-800">Controlli in volo</h3>
+              <p className="text-sm text-gray-500 mt-1">Traino, circuito, finale</p>
+            </button>
+            <button onClick={() => setView('emergenze')} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl hover:-translate-y-0.5 transition">
+              <h3 className="text-lg font-bold text-gray-800">Emergenze</h3>
+              <p className="text-sm text-gray-500 mt-1">Rottura cavo, vite, paracadute</p>
+            </button>
+          </div>
+
+          {/* Sezioni statiche sempre visibili */}
+          <div className="space-y-6">
+            <SectionCard title="Caratteristiche e limiti">
+              <StaticList blocks={blocchiCaratteristiche} />
+            </SectionCard>
+            <SectionCard title="Frequenze radio">
+              <StaticList blocks={blocchiFrequenze} />
+            </SectionCard>
+          </div>
+        </div>
+      );
+
+      const BackBar = ({ title }) => (
+        <div className="max-w-5xl mx-auto w-full px-4 mt-6">
+          <button onClick={() => setView('home')} className="text-blue-600 hover:text-blue-800 text-sm">&larr; Torna alla dashboard</button>
+          <h1 className="text-2xl font-bold text-gray-800 mt-3 mb-5">{title}</h1>
+        </div>
+      );
+
+      if (view === 'prevolo') {
+        return (
+          <div className="py-6">
+            <BackBar title="Controlli Prevolo" />
+            <div className="max-w-5xl mx-auto px-4 pb-12">
+              <SectionCard title="Checklist">
+                <Checklist blocks={blocchiPrevolo} state={prevolo} setState={setPrevolo} />
+              </SectionCard>
+            </div>
+          </div>
+        );
+      }
+
+      if (view === 'volo') {
+        return (
+          <div className="py-6">
+            <BackBar title="Controlli in volo" />
+            <div className="max-w-5xl mx-auto px-4 pb-12">
+              <SectionCard title="Checklist">
+                <Checklist blocks={blocchiVolo} state={volo} setState={setVolo} />
+              </SectionCard>
+            </div>
+          </div>
+        );
+      }
+
+      if (view === 'emergenze') {
+        return (
+          <div className="py-6">
+            <BackBar title="Emergenze e procedure non normali" />
+            <div className="max-w-5xl mx-auto px-4 pb-12">
+              <SectionCard title="Procedure">
+                <Checklist blocks={blocchiEmergenze} state={emergenze} setState={setEmergenze} />
+              </SectionCard>
+            </div>
+          </div>
+        );
+      }
+
+      return <Home />;
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
